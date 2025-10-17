@@ -15,10 +15,16 @@
                 <option value="pedra">Pedra</option>
                 <option value="papel">Papel</option>
                 <option value="tesoura">Tesoura</option>
+                <option value="">Nenhuma</option>
             </select>
             <button type="submit">Jogar</button>
         </form>
     </div>
+    @if (session('error'))
+        <div style="color: red; text-align: center; margin-top: 20px;">
+            {{ session('error') }}
+        </div>
+    @endif
     @if (!empty($resultadoJson))
         <div style="text-align: center; margin-top: 20px;">
             <h2>Resultado:</h2>
@@ -26,7 +32,7 @@
         </div>
          <div style="text-align: center; margin-top: 10px;">
             <h3>Jogada do Computador:</h3>
-            <p>{{ $resultadoJson['opcaoComputador'] }}</p>
+            <p>{{ $resultadoJson['opcaoMaquina'] }}</p>
         </div>
         <div style="text-align: center; margin-top: 10px;">
             <h3>Sua Jogada:</h3>

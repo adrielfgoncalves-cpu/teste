@@ -14,15 +14,20 @@ class jogoController extends Controller
     public function jogar(Request $request)
     {
         $opcaoUsuario = $request->input('opcao');
-        $opcoes = ['pedra', 'papel', 'tesoura'];
-        $opcaoComputador = $opcoes[array_rand($opcoes)];
+        $possibilidades = ['pedra', 'papel', 'tesoura'];
+        $opcaoMaquina = $possibilidades[array_rand($possibilidades)];
        // dd($opcaoUsuario);
-        if ($opcaoUsuario === $opcaoComputador) {
+
+        if ($opcaoUsuario === null) {
+            return redirect()->route('jogo')->with('error', 'Por favor, selecione uma opção.');
+        }
+        
+        if ($opcaoUsuario === $opcaoMaquina) {
             $resultado = 'Empate!';
         } elseif (
-            ($opcaoUsuario === 'pedra' && $opcaoComputador === 'tesoura') ||
-            ($opcaoUsuario === 'papel' && $opcaoComputador === 'pedra') ||
-            ($opcaoUsuario === 'tesoura' && $opcaoComputador === 'papel')
+            ($opcaoUsuario === 'pedra' && $opcaoMaquina === 'tesoura') ||
+            ($opcaoUsuario === 'papel' && $opcaoMaquina === 'pedra') ||
+            ($opcaoUsuario === 'tesoura' && $opcaoMaquina === 'papel')
         ) {
             $resultado = 'Você venceu!';
         } else {
@@ -31,7 +36,7 @@ class jogoController extends Controller
        
         $resultadoJson = [
             'resultado' => $resultado,
-            'opcaoComputador' => $opcaoComputador,
+            'opcaoMaquina' => $opcaoMaquina,
             'opcaoUsuario' => $opcaoUsuario
         ];
         //dd($resultadoJson);
