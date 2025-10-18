@@ -9,7 +9,7 @@ use App\Models\Order_Product;
 
 class orderController extends Controller
 {
-    //pagina inicial de pedidos
+   //pagina inicial de pedidos
    public function index()
     {
         //obter todos os pedidos
@@ -44,10 +44,7 @@ class orderController extends Controller
                 'preco_unitario' => $this->formatDecimal($request->preco_unitario),
                 'preco_total' => $this->formatDecimal($request->total),
             ]);
-           
-           // $order->save();
-
-            return redirect()->route('order.index')->with('success', 'Pedido criado com sucesso.');  
+          return redirect()->route('order.index')->with('success', 'Pedido criado com sucesso.');  
         } catch (\Exception $e) {
             dd($e->getMessage());
             return redirect()->route('order.index')->with('error', 'Erro ao criar pedido.');   
