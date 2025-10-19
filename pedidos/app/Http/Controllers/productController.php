@@ -28,7 +28,7 @@ class productController extends Controller
     public function edit($id)
     {
         $product = Product::Find($id);
-    
+
         if (!$product) {
             return redirect()->route('product.index')->with('error', 'Produto não encontrado.');
         }else{
@@ -40,14 +40,14 @@ class productController extends Controller
     public function store(Request $request)
     {
         //validar dados
-        $this->validateProduct($request);        
+        $this->validateProduct($request);
         try {
             Product::create($request->all());
-            return redirect()->route('product.index')->with('success', 'Produto criado com sucesso.');  
+            return redirect()->route('product.index')->with('success', 'Produto criado com sucesso.');
         } catch (\Exception $e) {
-            
-            return redirect()->route('product.index')->with('error', 'Erro ao criar produto.');   
-        }       
+
+            return redirect()->route('product.index')->with('error', 'Erro ao criar produto.');
+        }
     }
 
 
@@ -55,18 +55,18 @@ class productController extends Controller
     public function update(Request $request, $id)
     {
         //validar dados
-        $this->validateProduct($request);        
+        $this->validateProduct($request);
         try {
             $product = Product::find($id);
             if (!$product) {
-                return redirect()->route('product.index')->with('error', 'Produto não encontrado.');                
+                return redirect()->route('product.index')->with('error', 'Produto não encontrado.');
             }else
             {
                 $product->update($request->all());
-                return redirect()->route('product.index')->with('success', 'Produto atualizado com sucesso.');  
+                return redirect()->route('product.index')->with('success', 'Produto atualizado com sucesso.');
             }
         } catch (\Exception $e) {
-            return redirect()->route('product.index')->with('error', 'Erro ao atualizar produto.');   
+            return redirect()->route('product.index')->with('error', 'Erro ao atualizar produto.');
         }
     }
 
@@ -74,25 +74,26 @@ class productController extends Controller
     public function destroy($id)
     {
         try {
-            $product = Product::find($id);     
+            $product = Product::find($id);
             //verifica se o produto esta associado a algum pedido
-            $ordersCount = Order::whereHas('products', function ($query) use ($id) {
+            /* $ordersCount = Order::whereHas('products', function ($query) use ($id) {
                 $query->where('produto_id', $id);
             })->count();
-            //dd($teste);
+            //dd($teste); */
+            $ordersCount = $product->orders()->count();
 
             if (!$product) {
-                return redirect()->route('product.index')->with('error', 'Produto não encontrado.');                
+                return redirect()->route('product.index')->with('error', 'Produto não encontrado.');
             }else if ($ordersCount > 0) {
-                return redirect()->route('product.index')->with('error', 'Não é possível excluir o produto porque ele está associado a pedidos.');  
+                return redirect()->route('product.index')->with('error', 'Não é possível excluir o produto porque ele está associado a pedidos.');
             }else
             {
                 $product->delete();
-                return redirect()->route('product.index')->with('success', 'Produto excluído com sucesso.');  
+                return redirect()->route('product.index')->with('success', 'Produto excluído com sucesso.');
             }
         } catch (\Exception $e) {
             dd($e->getMessage());
-            return redirect()->route('product.index')->with('error', 'Erro ao excluir produto.');   
+            return redirect()->route('product.index')->with('error', 'Erro ao excluir produto.');
         }
     }
 
@@ -108,7 +109,7 @@ class productController extends Controller
                 'preco.min' => 'O campo Preço deve ser no mínimo 0.',
                 'estoque.required' => 'O campo Estoque é obrigatório.',
                 'estoque.integer' => 'O campo Estoque deve ser um número inteiro.',
-                'estoque.min' => 'O campo Estoque deve ser no mínimo 0.',   
+                'estoque.min' => 'O campo Estoque deve ser no mínimo 0.',
             ]
         );
     }
