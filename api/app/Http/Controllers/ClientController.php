@@ -9,6 +9,8 @@ use App\Models\Order;
 use Exception;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
+use OpenApi\Annotations as AO;
+
 
 class ClientController extends Controller
 {
@@ -42,7 +44,7 @@ class ClientController extends Controller
             return response()->json($client, 201);
         } catch (Exception $e) {
             return response()->json([
-                "message" => "Erro ao cadastrar cliente",
+                "message" => $e->getMessage(), //"Erro ao cadastrar cliente",
             ], 404);
         }
     }
@@ -87,7 +89,7 @@ class ClientController extends Controller
 
         } catch (Exception $e) {
             return response()->json([
-                "message" => "Erro ao atualizar cliente",
+                "message" => $e->getMessage(),//"Erro ao atualizar cliente",
             ], 404);
         }
     }
