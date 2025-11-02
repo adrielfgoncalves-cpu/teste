@@ -15,6 +15,10 @@ use App\Http\Controllers\AuthController;
 //rotas de autenticação
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+
+
 
 //Rotas da API
 //rotas de clientes, reuqer autenticação, exceto para store

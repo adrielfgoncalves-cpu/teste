@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Http\Requests\ProdutoReuest;
 
 class User extends Authenticatable
 {
@@ -46,4 +48,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+   // retorna os levels do user
+    public function levels()
+    {
+        return $this->belongsToMany(Levels::class, 'user_levels', 'user_id', 'level_id');
+    }
+
+    //retorna levels
+    public function getLevelNames()
+    {
+        return $this->levels->pluck('name')->toArray();
+    }
+
+
+
 }

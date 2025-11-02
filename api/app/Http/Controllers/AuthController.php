@@ -2,26 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Levels;
+use App\Http\Requests\UserRegisterRequest;
+
+
+
 
 class AuthController extends Controller
 {
     // Registro de novo usuário
-    public function register(Request $request)
+    public function register(UserRegisterRequest $request)
     {
-        $fields = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|confirmed'
-        ]);
+        $fields = $request->validated();
+
+        $levelUser = '';
+
+        // se veio um nível:
+        if (isset($fields['levels'])) {
+            $levelUser = $fields['levels'];
+        //se nao foi informado o level do user, seta User
+        } else {
+            $levelUser = Levels::where('name', 'User')->first()->id;
+        }
 
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => bcrypt($fields['password'])
         ]);
+
+        $user->levels()->attach($levelUser);
 
         $token = $user->createToken('api_token')->plainTextToken;
 
@@ -32,12 +46,9 @@ class AuthController extends Controller
     }
 
     // Login e geração de token
-    public function login(Request $request)
+    public function login(UserLoginRequest $request)
     {
-        $fields = $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string'
-        ]);
+        $fields = $request->validated();
 
         $user = User::where('email', $fields['email'])->first();
 
@@ -45,19 +56,20 @@ class AuthController extends Controller
             return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
 
-        $token = $user->createToken('api_token')->plainTextToken;
+        $token = $user->createToken('api_token', $user->getLevelNames())->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => $user->name,
+            'email' => $user->email,
             'token' => $token
-        ]);
+        ], 200);
     }
 
     // Logout (revoga tokens)
     public function logout(Request $request)
     {
+        //dd($request->user());
         $request->user()->tokens()->delete();
-
-        return response()->json(['message' => 'Logout realizado com sucesso']);
+        return response()->json(['message' => 'Logout realizado com sucesso'], 200);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Exception;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 //toResourceCollection para converter a coleção de produtos
 //toResource para converter um único produto
@@ -80,6 +81,11 @@ class ProductController extends Controller
     public function update(ProdutoReuest $request, string $id)
     {
         $data = $request->validated();
+
+       if (!$request->user()->tokenCan('User'))
+             return response()->json([
+                "message" => "Usuário sem permisão para acão",
+            ], 403);
 
         try{
             $product = Product::find($id);
