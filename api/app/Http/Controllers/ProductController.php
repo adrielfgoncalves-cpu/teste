@@ -26,8 +26,9 @@ class ProductController extends Controller
         $regPerPage = 2;
         $skip = ($curentPage - 1) * $regPerPage;
         //faz a paginação e busca 2 registros por vez
-        $products = Product::skip($skip)->take($regPerPage)->orderByDesc('id')->get();
-        //dd($products);
+        $products = Product::with('orders')->skip($skip)->take($regPerPage)->orderByDesc('id')->get();
+       // dd($products);
+
 
         return response()->json($products->toResourceCollection(), 200);
     }

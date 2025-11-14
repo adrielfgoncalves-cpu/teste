@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::apiResource('clients', ClientController::class);
 
 //rotas de produtos, reuqer autenticação, exceto para store
-Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');
+Route::apiResource('products', ProductController::class);//->middleware('auth:sanctum');
 
 
 
